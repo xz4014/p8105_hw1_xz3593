@@ -1,0 +1,70 @@
+---
+title: "Homework1"
+output: github_document
+date: "2026-09-26"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+#Problem 1
+```{r}
+data("penguins", package = "palmerpenguins")
+```
+In this dataset, the species are `r paste(levels(penguins$species), collapse = ", ")`, and the islands are `r paste(levels(penguins$island), collapse = ", ")`.And each row represents one penguin. Other variables are `bill_length_mm`, `bill_depth_mm`, `flipper_length_mm`, `body_mass_g`, `sex`, and `year`. 
+
+The dataset contains `r nrow(penguins)` observations and `r ncol(penguins)` variables.
+
+The mean flipper length is `r round(mean(penguins$flipper_length_mm, na.rm = TRUE), 1)` mm
+
+```{r penguins_scatterplot}
+library(ggplot2)
+
+penguins_scatterplot <- ggplot(penguins, aes(x = bill_length_mm, y = flipper_length_mm, color = species)) + geom_point()
+
+penguins_scatterplot
+ggsave("penguins_scatterplot.pdf", plot = penguins_scatterplot, height = 4, width = 6)
+```
+#Problem2
+
+```{r problem2}
+set.seed(1234)
+random_sample <- rnorm(10)
+random_sample
+
+is_positive <- random_sample > 0
+is_positive
+
+characters <- c("a", "b", "c", "d", "e", "f", "g", "h", "i", "j")
+characters
+
+category <- factor(c("A", "B", "C", "A", "B", "C", "A", "B", "C", "A"))
+category
+
+library(tidyverse)
+
+problem2_df = tibble(
+  random_sample = random_sample,
+  is_positive = is_positive,
+  characters = characters,
+  category = category
+)
+problem2_df
+```
+```{r problem2-means}
+mean(pull(problem2_df, random_sample))
+mean(pull(problem2_df, is_positive))
+mean(pull(problem2_df, characters))
+mean(pull(problem2_df, category))
+
+```
+The mean only works for `random_sample` and `is_positive`, it only works for numerical and logical variables.The mean does not work for `characters` and `category`.Because character and factor variables cannot be averaged directly.
+
+```{r problem2-conversion, results='hide', warning=FALSE}
+as.numeric(pull(problem2_df, is_positive))
+as.numeric(pull(problem2_df, characters))
+as.numeric(pull(problem2_df, category))
+```
+as.numeric() turns TRUE into 1 and FALSE into 0, which can explain why the logical variable has a mean of 0.4.
+The letters become NA because they are not numbers. 
+The factor values become 1, 2 and 3, but these are just representation for A, B, and C, so their average would not be meaningful.
